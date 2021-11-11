@@ -15,12 +15,16 @@ class User(Base):
     first_name = Column(String(250), unique=False, nullable=False)
     last_name = Column(String(250), unique=False, nullable=False)
     email = Column(String(250), unique=True, nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    comment_id = Column(Integer, ForeignKey('comment.id'))
+    user_from_id = Column(Integer, ForeignKey('follower.id'))
+    user_to_id = Column(Integer, ForeignKey('follower.id'))
 
 class Post(Base):
     __tablename__ = 'post'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    comment_id = Column(Integer, ForeignKey('comment.id'))
+    media_id = Column(Integer, ForeignKey('media.id'))
 
 
 class Media(Base):
@@ -28,23 +32,18 @@ class Media(Base):
     id = Column(Integer, primary_key=True)
     type_media = Column(Enum, unique=False, nullable=False)
     url = Column(String(250), unique=False, nullable=False)
-    post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
+
 
 class Comment(Base):
     __tablename__ = 'comment'
     id = Column(Integer, primary_key=True)
     comment_text = Column(String(250), unique=False, nullable=False)
-    author_id = Column(Integer, ForeignKey('user.id'))
-    post_id = Column(Integer, ForeignKey('post.id'))
-    author_user = relationship(User)
-
+    
 class Follower(Base):
     __tablename__ = 'follower'
-    user_from_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    user_to_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    user_from = relationship(User)
-    user_to = relationship(User)
+    id = Column(Integer, primary_key=True)
+
+
 
     
     def to_dict(self):
